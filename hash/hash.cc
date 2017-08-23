@@ -11,3 +11,8 @@ unsigned long hash_function:: djb2_hash(string kmer, int kmer_size)
   }  
   return hash;
 }
+
+unsigned long hash_function:: bloom_filter_hash(string kmer, int kmer_size, int seed)
+{
+
+}

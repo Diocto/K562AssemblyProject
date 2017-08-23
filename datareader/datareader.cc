@@ -8,8 +8,11 @@
 #include<string>
 #include<pthread.h>
 #include "../hash/hash.h"
+#include "../datastructure/kmerlist.h"
 using namespace std;
-pthread_mutex_t mt = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mtA = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mtQ = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mtL = PTHREAD_MUTEX_INITIALIZER;
 std::bitset<HASH_SIZE> hash_table;
 
 void print_hash(){
@@ -17,17 +20,26 @@ void print_hash(){
   cout<<hash_table.size() - hash_table.count()<<"\n";
 }
 
-void* FastReaderWrapper(void* readerObj)
+void* FastaReaderWrapper(void* th_p)
 {
-  pthread_mutex_lock(&mt);
-  reader* dr = static_cast<reader*>(readerObj);
-  dr -> FastaReader(sequence++);
+  pthread_mutex_lock(&mtA);
+  thread_para* temp = static_cast<thread_para*>(th_p);
+  temp->dr -> FastaReader(sequenceA++);
 }
 
 
-reader::reader(string fn, string fq1_fn, string fq2_fn,int kms)
-  :ref(fn),fq1(fq1_fn),fq2(fq2_fn),kmer_size(kms),gts_cnt(0)
+void* FastqReaderWrapper(void* th_p)
 {
+  pthread_mutex_lock(&mtQ);
+  thread_para* temp = static_cast<thread_para*>(th_p);
+  temp->dr -> FastqReader(sequenceQ++,temp->number);
+}
+
+reader::reader(string fn, string fq1_fn, string fq2_fn,int kms)
+  :ref(fn),kmer_size(kms),gts_cnt(0)
+{
+  fq[0] = fq1_fn;
+  fq[1] = fq2_fn;
 }
 
 void reader::find_start_fasta()
@@ -40,25 +52,90 @@ void reader::find_start_fasta()
   while(!is.eof()){
     is >> cnt_str;
     if( cnt_str.find(">") != string::npos )
-       start.push_back((unsigned long long)is.tellg()) ;
+       starta.push_back((unsigned long long)is.tellg()) ;
   }
   is.close();
 }
 
-void reader::FastqReader()
+void reader::find_start_fastq(int number)
 {
+  unsigned long long file_size;
+  unsigned long long section_size;
+  unsigned long long position;
+  string t;
+  ifstream is(fq[number].c_str(),ifstream::in );
+  int lineCount = 0;
+  while(getline(is, t))
+   ++lineCount;
+  is.clear();
+  is.seekg(0,ios::beg);
+  cout << "number of lines : " << lineCount << endl;
+  
+  readLine = lineCount/NUMTHREAD;
+  cout << " read Line : " << readLine << endl;
+ 
+  while(!is.eof()){
+  for (int  i = 0; i<readLine; i++){
+     getline(is, t, '\n');
+     if (is.eof()){
+     is.clear();
+   for (int i=0; i < startq.size(); i++){
+  is.seekg(startq[i]);
+  cout << i << " view start point : " << (char)is.peek()<< endl;}
+  is.close();
+  return;
+    
+}}
+  startq.push_back((unsigned long long)is.tellg());
+  cout << "is.tellg == " << is.tellg() << endl;
+}
 }
 
+void reader::FastqReader(int seq_num,int number)
+{
+  pthread_mutex_unlock(&mtQ);
+  ifstream partial_r(fq[number].c_str(),ifstream::in);
+  unsigned long long partial_start = startq[seq_num];
+  partial_r.seekg(partial_start);
+  string genome_seq;
+  string genome_substr;
+  string garbage;
+  int id = 0;
+  int distin;
+  kmernode* node;
+  
+  for (int j =0; j < readLine/4; j++){
+    getline(partial_r,garbage);
+    getline(partial_r,genome_seq);
+    distin = 0;
+     for(int i = 0; i < 100 - kmer_size + 1; i++){
+       if (genome_seq.size() != 0){ 
+         genome_substr = genome_seq.substr(i,kmer_size);
+         if ( hash_table[hash_function::djb2_hash(genome_substr, kmer_size)%(HASH_SIZE)] == 0 ){
+           if(distin == 0){
+	     pthread_mutex_lock(&mtL);
+	     node = kmerlist::add_node(genome_seq);
+	     pthread_mutex_unlock(&mtL);
+             distin++;
+	   } 
+	   node->add_ptr(i);
+         }
+       }
+    }
+    getline(partial_r,garbage,'\n');
+    getline(partial_r,garbage,'\n');
+    id++;
+  }
+}
 void reader::FastaReader(int seq_num)
 {
   stringstream ss;
   ss<<"output/"<<seq_num<<".txt";
-  pthread_mutex_unlock(&mt);
+  pthread_mutex_unlock(&mtA);
   
   cout <<seq_num<<" thread start !!\n";
   ifstream partial_r(ref.c_str(),ifstream::in);
-  //ofstream partial_w(ss.str().c_str(),ofstream::out);
-  unsigned long long thread_start = start[seq_num];
+  unsigned long long thread_start = starta[seq_num];
   string contig;
   string line;
   string sub;
@@ -76,5 +153,4 @@ void reader::FastaReader(int seq_num)
     hash_table[hash_function::djb2_hash(sub, kmer_size)%(HASH_SIZE)] = 1;
   }
   partial_r.close();
-  //partial_w.close();
 }

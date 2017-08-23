@@ -8,12 +8,13 @@
 using namespace std;
 
 extern std::bitset<HASH_SIZE> hash_table;
+extern std::bitset<HASH_SIZE> bloom_hash_table;
 
 class hash_function
 {
   public:
     static unsigned long djb2_hash(string kmer,int kmer_size);
-    static unsigned long bloom_filter_hash();
+    static unsigned long bloom_filter_hash(string kmer,int kmer_size, int seed);
 };
 
 #endif
