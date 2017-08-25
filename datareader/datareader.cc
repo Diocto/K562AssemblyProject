@@ -80,14 +80,13 @@ void reader::find_start_fastq(int number)
      if (is.eof()){
      is.clear();
    for (int i=0; i < startq.size(); i++){
-  is.seekg(startq[i]);
-  cout << i << " view start point : " << (char)is.peek()<< endl;}
+  is.seekg(startq[i]);}
   is.close();
   return;
     
 }}
   startq.push_back((unsigned long long)is.tellg());
-  cout << "is.tellg == " << is.tellg() << endl;
+  cout << "ISTELLG : " << is.tellg() << endl;
 }
 }
 

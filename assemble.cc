@@ -6,12 +6,13 @@
 #include<cstring>
 #include"datareader/datareader.h"
 #include"datastructure/kmerlist.h"
+#include"datapr/datapr.h"
 #include"hash/hash.h"
 #include<pthread.h>
 #include<unistd.h>
 #include<time.h>
 using namespace std;
-
+//std::bitset<HASH_SIZE> hash_table;
 int main(int argc, char* argv[])
 {
   
@@ -24,9 +25,7 @@ int main(int argc, char* argv[])
   int start_sizeA;
   int start_sizeQ;
   thread_para th_p;
-  clock_t before;
-  double result_time;
-  before = clock(); 
+  datapr* dataPr = new datapr();
 
   th_p.dr = new reader(ref_fn,fq1_fn,fq2_fn ,km);  
   th_p.dr -> find_start_fasta();
@@ -64,8 +63,12 @@ int main(int argc, char* argv[])
   for(int i = 0; i<start_sizeQ; i++){
     pthread_join(thrd2Q[i], NULL );
   } 
+  cout << "DONE 1" << endl;
+  //kmerlist::print_list();
+  
+ // dataPr->kmerProcess();
+ // dataPr->process_Out(); 
   ///////// fastq read proccess/////////////////////
-  kmerlist::print_list();
-  //print_hash();
+  //hash_table.reset();
   return 0;
 }
