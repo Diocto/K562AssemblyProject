@@ -12,7 +12,6 @@
 #include<unistd.h>
 #include<time.h>
 using namespace std;
-//std::bitset<HASH_SIZE> hash_table;
 int main(int argc, char* argv[])
 {
   
@@ -26,7 +25,7 @@ int main(int argc, char* argv[])
   int start_sizeQ;
   thread_para th_p;
   datapr* dataPr = new datapr();
-
+  
   th_p.dr = new reader(ref_fn,fq1_fn,fq2_fn ,km);  
   th_p.dr -> find_start_fasta();
   th_p.dr -> find_start_fastq(0);
@@ -69,6 +68,7 @@ int main(int argc, char* argv[])
  // dataPr->kmerProcess();
  // dataPr->process_Out(); 
   ///////// fastq read proccess/////////////////////
-  //hash_table.reset();
+  vector<int> primes = hash_function::prime_generator(km);
+  hash_function::bloom_filter_hash(km, primes,list_start);
   return 0;
 }

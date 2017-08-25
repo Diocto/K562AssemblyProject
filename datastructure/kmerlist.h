@@ -28,6 +28,14 @@ class kmernode
     vector <string> getKmers();
     void add_ptr(int kmer_ptr);
     void print_node();
+    kmernode* get_next()
+    { 
+      return next;
+    }
+    string get_read()
+    {
+      return read;
+    }
   friend class kmerlist;  
   friend class datapr;
 };
@@ -38,6 +46,7 @@ class kmerlist
     static int node_number ;
     static kmernode* add_node(string genome_seq);
     static void print_list();
+    static void delete_node(kmernode* before, kmernode* del);
 };
 
 class readList

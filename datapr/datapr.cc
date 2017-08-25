@@ -24,7 +24,7 @@ void datapr::kmerProcess()
  while(temp != NULL){
   temp_kmers = temp->getKmers();
   for (int i = 0; i<temp_kmers.size(); i++){
-  hashed_list[hash_function::djb2_hash(temp_kmers[i],kmer_size)%(HASH_SIZE)].add(temp->getRead());
+  hashed_list[hash_function::djb2_hash(temp_kmers[i],kmer_size,5381)%(HASH_SIZE)].add(temp->getRead());
  temp = temp->next;
  }
  number++;

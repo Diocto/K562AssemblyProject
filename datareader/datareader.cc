@@ -110,7 +110,7 @@ void reader::FastqReader(int seq_num,int number)
      for(int i = 0; i < 100 - kmer_size + 1; i++){
        if (genome_seq.size() != 0){ 
          genome_substr = genome_seq.substr(i,kmer_size);
-         if ( hash_table[hash_function::djb2_hash(genome_substr, kmer_size)%(HASH_SIZE)] == 0 ){
+         if ( hash_table[hash_function::djb2_hash(genome_substr, kmer_size,5381)%(HASH_SIZE)] == 0 ){
            if(distin == 0){
 	     pthread_mutex_lock(&mtL);
 	     node = kmerlist::add_node(genome_seq);
@@ -149,7 +149,7 @@ void reader::FastaReader(int seq_num)
   unsigned long long max_ptr = contig.size() - kmer_size;  
   for(unsigned long long i = 0; i <= max_ptr ; i++){
     sub = contig.substr(i, kmer_size); 
-    hash_table[hash_function::djb2_hash(sub, kmer_size)%(HASH_SIZE)] = 1;
+    hash_table[hash_function::djb2_hash(sub, kmer_size,5381)%(HASH_SIZE)] = 1;
   }
   partial_r.close();
 }

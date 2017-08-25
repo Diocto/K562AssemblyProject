@@ -69,6 +69,14 @@ void kmerlist::print_list()
    node = node ->next;
  }
 }
+
+void kmerlist::delete_node(kmernode* before, kmernode* del)
+{
+  before->next = del->next;
+  node_number--;
+  delete del;
+}
+
 readList::readList()
 {
 	Head->nextNode = NULL;

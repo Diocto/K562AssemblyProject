@@ -12,7 +12,7 @@ class readList;
 class datapr
 {
  private:
-  readList hashed_list[HASH_SIZE];
+  readList hashed_list[0];
  public:
   datapr();
   void kmerProcess();
