@@ -1,25 +1,26 @@
-all: assemble 
+.SUFFIXES : .cc.o
 
-assemble: assemble.o datareader.o hash.o kmerlist.o datapr.o
-	g++ -std=c++11 -o assemble assemble.o datareader.o hash.o kmerlist.o datapr.o -lpthread
+RM = rm -rf
+CXX = g++
+CPPFLAGS = -std=c++11
+VPATH = datareader hash datastructure datapr
+SRCS = assemble.cc datareader.cc hash.cc kmerlist.cc datapr.cc
+OBJS = $(SRCS:.cc=.o)
+LDFLAGS = -lpthread
+TARGET = assemble
 
-assemble.o: assemble.cc
-	g++ -std=c++11 -c assemble.cc -lpthread
+$(TARGET): $(OBJS) 
+	$(CXX) $(CPPFLAGS) -o $@ $(OBJS) $(LDFLAGS)
 
-datareader.o:
-	g++ -std=c++11 -c datareader/datareader.cc -lpthread
+.cc.o:
+	$(CXX) $(CPPFLAGS) -c $< $(LDFLAGS)
 
-hash.o:
-	g++ -std=c++11 -c hash/hash.cc -lpthread
-
-kmerlist.o:
-	g++ -std=c++11 -c datastructure/kmerlist.cc -lpthread
-
-datapr.o:
-	g++ -std=c++11 -c datapr/datapr.cc -lpthread
+assemble.o : assemble.cc
+datareader.o: datareader.cc datareader.h
+hash.o: hash.cc hash.h
+kmerlist.o: kmerlist.cc kmerlist.h
+datapr.o: datapr.cc datapr.h
 
 clean:
-	rm -rf *.o
+	$(RM) $(TARGET) $(OBJS) 
 
-cleantemp:
-	rm -rf output/*.txt
