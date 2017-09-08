@@ -62,16 +62,22 @@ void reader::find_start_fastq(int number)
   unsigned long long file_size;
   unsigned long long section_size;
   unsigned long long position;
+  NUMTHREAD = 0;
   string t;
   ifstream is(fq[number].c_str(),ifstream::in );
   int lineCount = 0;
   while(getline(is, t))
    ++lineCount;
   is.clear();
+   for (int i=1000; i < lineCount ; i++){
+    if(lineCount % i == 0 && (lineCount/i)%4 == 0 ) {
+       NUMTHREAD = i;
+       readLine = lineCount/NUMTHREAD;
+       break;
+    }
+  }
   is.seekg(0,ios::beg);
   cout << "number of lines : " << lineCount << endl;
-  
-  readLine = lineCount/NUMTHREAD;
   cout << " read Line : " << readLine << endl;
  
   while(!is.eof()){
@@ -79,14 +85,13 @@ void reader::find_start_fastq(int number)
      getline(is, t, '\n');
      if (is.eof()){
      is.clear();
-   for (int i=0; i < startq.size(); i++){
-  is.seekg(startq[i]);}
+   for (int j=0; j < startq.size(); j++){
+  is.seekg(startq[j]);}
   is.close();
   return;
     
 }}
   startq.push_back((unsigned long long)is.tellg());
-  cout << "ISTELLG : " << is.tellg() << endl;
 }
 }
 
@@ -107,8 +112,8 @@ void reader::FastqReader(int seq_num,int number)
     getline(partial_r,garbage);
     getline(partial_r,genome_seq);
     distin = 0;
-     for(int i = 0; i < 100 - kmer_size + 1; i++){
-       if (genome_seq.size() != 0){ 
+     for(int i = 0; i < 101 - kmer_size + 1; i++){
+       if (genome_seq.size() != 0){
          genome_substr = genome_seq.substr(i,kmer_size);
          if ( hash_table[hash_function::djb2_hash(genome_substr, kmer_size,5381)%(HASH_SIZE)] == 0 ){
            if(distin == 0){

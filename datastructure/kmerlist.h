@@ -56,6 +56,8 @@ private:
 	{
 	public:
 		string data;
+	/*	unsigned long long data_ptr; ----> 해당 read의 id의 첫번째문자  포인터
+		int pair;	*/  //-----------> read를 가지고 있는 pair 숫자 
 		Node* nextNode;
 	};
 	void valid(int count);

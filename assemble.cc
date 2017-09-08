@@ -30,8 +30,7 @@ int main(int argc, char* argv[])
   th_p.dr -> find_start_fasta();
   th_p.dr -> find_start_fastq(0);
   start_sizeA = th_p.dr -> get_start_size();
-  start_sizeQ = 40;
-   
+  start_sizeQ = th_p.dr -> get_NumThread();  
   pthread_t thrdA[start_sizeA];
   pthread_t thrd1Q[start_sizeQ];
   pthread_t thrd2Q[start_sizeQ];
@@ -62,13 +61,14 @@ int main(int argc, char* argv[])
   for(int i = 0; i<start_sizeQ; i++){
     pthread_join(thrd2Q[i], NULL );
   } 
-  cout << "DONE 1" << endl;
-  //kmerlist::print_list();
-  
- // dataPr->kmerProcess();
- // dataPr->process_Out(); 
-  ///////// fastq read proccess/////////////////////
-  vector<int> primes = hash_function::prime_generator(km);
-  hash_function::bloom_filter_hash(km, primes,list_start);
+
+//bloom filter.//
+  vector<int> primes = hash_function::prime_generator(km-30);
+  hash_function::bloom_filter_hash(km-30, primes,list_start);
+  kmerlist::print_list();
+
+  dataPr->kmerProcess();
+  dataPr->process_Out(); 
+
   return 0;
 }

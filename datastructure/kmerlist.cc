@@ -34,7 +34,6 @@ vector <string> kmernode::getKmers()
  return temp;
 }
 
-
 void kmernode::add_ptr(int kmer_ptr)
 {
   kmer_ptrs.push_back(kmer_ptr);
@@ -63,11 +62,12 @@ kmernode* kmerlist:: add_node(string genome_seq)
 
 void kmerlist::print_list()
 {
+ cout<<node_number;/*
  kmernode* node = list_start;
  while(node -> next != NULL){
    node->print_node(); 
    node = node ->next;
- }
+ }*/
 }
 
 void kmerlist::delete_node(kmernode* before, kmernode* del)
@@ -92,7 +92,7 @@ string readList::get(int index)
 }
 void readList::add(string Data)
 {
-	Node* NewNode = new Node;
+        Node* NewNode = new Node;
 	NewNode->data = Data;
 	NewNode->nextNode = NULL;
 	if (Head->nextNode == NULL){

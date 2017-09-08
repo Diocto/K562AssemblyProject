@@ -5,7 +5,6 @@
 #include<string>
 #include<vector>
 
-#define NUMTHREAD 1600
 using namespace std;
 
 static int sequenceA = 0;
@@ -23,6 +22,7 @@ class reader{
     vector<unsigned long long> starta;
     vector<unsigned long long> startq;
     int readLine;
+    int NUMTHREAD;
 
   public:
     reader(string fn,string fq1_fn, string fq2_fn, int kms);
@@ -33,6 +33,7 @@ class reader{
     int get_start_size(){
       return starta.size();
     }
+    int get_NumThread(){ return NUMTHREAD; }
 };
 
 typedef struct thread_para{

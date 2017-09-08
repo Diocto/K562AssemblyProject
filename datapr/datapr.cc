@@ -17,32 +17,35 @@ datapr::datapr()
 {}
 void datapr::kmerProcess()
 {
- cout << "DONE 2" << endl;
  kmernode* temp = list_start;
  vector<string> temp_kmers;
- int number = 0;
+ int hash_num = 0;
  while(temp != NULL){
   temp_kmers = temp->getKmers();
   for (int i = 0; i<temp_kmers.size(); i++){
-  hashed_list[hash_function::djb2_hash(temp_kmers[i],kmer_size,5381)%(HASH_SIZE)].add(temp->getRead());
- temp = temp->next;
- }
- number++;
- if(number >= 10000){
-   number = 0;
-   cout << "million! Cong!" << endl;
+    hash_num =  hash_function::djb2_hash(temp_kmers[i],kmer_size,5841)%(READ_HASH_SIZE);
+        if (hashed_list[hash_num] == NULL){
+ 	hashed_list[hash_num] = new readList;
+        }
+    hashed_list[hash_num] -> add(temp->getRead());
+    if ( temp->next == NULL){
+    cout << "DONEEEEE" << endl;
+      return;}
+    temp = temp->next;
  }
 
- cout << "DOEN 3" << endl;
-} 
+}
 }
 void datapr::process_Out()
 {
  cout << "DONE 4" << endl;
- for ( int i =0; i<HASH_SIZE; i++){
-   for ( int j=0; j<hashed_list[i].size();i++){
-  cout << i << " LINE READ : " <<  hashed_list[i].get(j) << endl;
-  }}
+ for ( int i =0; i<READ_HASH_SIZE; i++){
+   if (hashed_list[i] != NULL) {
+   for ( int j=0; j<hashed_list[i]->size();j++){
+  cout << "HASHED SIZE : " << hashed_list[i]->size() << endl;
+  cout << " I is : " << i << " J is : " << j <<endl;
+  cout << i << " LINE READ : " <<hashed_list[i]->get(j) << endl;
+  }}}
  cout << "DONE 5" << endl;
 }
 
