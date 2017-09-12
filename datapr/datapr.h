@@ -18,6 +18,7 @@ class datapr
   datapr();
   void kmerProcess();
   void process_Out();
+  void make_nodab_fq_wrapper(string pair1, string pair2);
 };
 
 #endif

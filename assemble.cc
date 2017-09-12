@@ -68,7 +68,6 @@ int main(int argc, char* argv[])
   kmerlist::print_list();
 
   dataPr->kmerProcess();
-  dataPr->process_Out(); 
-
+  dataPr->make_nodab_fq_wrapper(fq1_fn, fq2_fn);
   return 0;
 }

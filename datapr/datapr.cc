@@ -27,7 +27,7 @@ void datapr::kmerProcess()
         if (hashed_list[hash_num] == NULL){
  	hashed_list[hash_num] = new readList;
         }
-    hashed_list[hash_num] -> add(temp->getRead());
+    hashed_list[hash_num] -> add(temp->getRead(),temp->getStart());
     if ( temp->next == NULL){
     cout << "DONEEEEE" << endl;
       return;}
@@ -38,14 +38,30 @@ void datapr::kmerProcess()
 }
 void datapr::process_Out()
 {
- cout << "DONE 4" << endl;
  for ( int i =0; i<READ_HASH_SIZE; i++){
    if (hashed_list[i] != NULL) {
    for ( int j=0; j<hashed_list[i]->size();j++){
   cout << "HASHED SIZE : " << hashed_list[i]->size() << endl;
   cout << " I is : " << i << " J is : " << j <<endl;
-  cout << i << " LINE READ : " <<hashed_list[i]->get(j) << endl;
+  hashed_list[i]->get(j);
   }}}
- cout << "DONE 5" << endl;
 }
+
+
+void datapr::make_nodab_fq_wrapper(string pair1, string pair2)
+{
+  ifstream read_pair1(pair1.c_str(),ifstream::in);
+  ifstream read_pair2(pair2.c_str(),ifstream::in);
+  ofstream write_pair1("output/nodabread_1.fastq",ofstream::out);
+  ofstream write_pair2("output/nodabread_2.fastq",ofstream::out);
+
+  for(int i = 0; i<READ_HASH_SIZE;i++)
+  {
+    if(hashed_list[i] != NULL){
+      hashed_list[i] -> make_nodab_fq(read_pair1,read_pair2,write_pair1,write_pair2);
+    }
+  }
+} 
+    
+
 

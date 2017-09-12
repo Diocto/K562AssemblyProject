@@ -3,7 +3,6 @@
 #include<iostream>
 #include<string>
 #include<vector>
-
 #define FASTQ_READ_SIZE 100
 using namespace std;
 
@@ -20,11 +19,13 @@ class kmernode
     string read;
     vector <int> kmer_ptrs;  
     kmernode* next;
-
+    unsigned long long start_ptr;
   public:
     kmernode();
     kmernode(string abno_read);
     string getRead();
+    unsigned long long getStart();
+    void add_start_ptr(int start);
     vector <string> getKmers();
     void add_ptr(int kmer_ptr);
     void print_node();
@@ -56,8 +57,7 @@ private:
 	{
 	public:
 		string data;
-	/*	unsigned long long data_ptr; ----> 해당 read의 id의 첫번째문자  포인터
-		int pair;	*/  //-----------> read를 가지고 있는 pair 숫자 
+	        unsigned long long start_ptr;
 		Node* nextNode;
 	};
 	void valid(int count);
@@ -66,8 +66,10 @@ private:
 public:
 	readList();
         int size();
+        void add_start_ptr(int start);
 	string get(int index);
-	void add(string Data);
+	void add(string Data,unsigned long long start);
 	void add(int Count,string Data);
+	void make_nodab_fq(ifstream& rpair1, ifstream& rpair2, ofstream& wpair1, ofstream& wpair2);
 };
 #endif

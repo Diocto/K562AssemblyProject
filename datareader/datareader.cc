@@ -104,11 +104,13 @@ void reader::FastqReader(int seq_num,int number)
   string genome_seq;
   string genome_substr;
   string garbage;
-  int id = 0;
+  unsigned long long start = 0;
   int distin;
   kmernode* node;
   
   for (int j =0; j < readLine/4; j++){
+    start = partial_r.tellg();
+    start = start++;
     getline(partial_r,garbage);
     getline(partial_r,genome_seq);
     distin = 0;
@@ -119,6 +121,7 @@ void reader::FastqReader(int seq_num,int number)
            if(distin == 0){
 	     pthread_mutex_lock(&mtL);
 	     node = kmerlist::add_node(genome_seq);
+             node->add_start_ptr(start);
 	     pthread_mutex_unlock(&mtL);
              distin++;
 	   } 
@@ -128,7 +131,6 @@ void reader::FastqReader(int seq_num,int number)
     }
     getline(partial_r,garbage,'\n');
     getline(partial_r,garbage,'\n');
-    id++;
   }
 }
 void reader::FastaReader(int seq_num)
