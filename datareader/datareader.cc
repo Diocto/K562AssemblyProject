@@ -79,7 +79,7 @@ void reader::find_start_fastq(int number)
   is.seekg(0,ios::beg);
   cout << "number of lines : " << lineCount << endl;
   cout << " read Line : " << readLine << endl;
- 
+  startq.push_back((unsigned long long)0);
   while(!is.eof()){
   for (int  i = 0; i<readLine; i++){
      getline(is, t, '\n');
@@ -95,6 +95,7 @@ void reader::find_start_fastq(int number)
 }
 }
 
+
 void reader::FastqReader(int seq_num,int number)
 {
   pthread_mutex_unlock(&mtQ);
@@ -107,7 +108,6 @@ void reader::FastqReader(int seq_num,int number)
   unsigned long long start = 0;
   int distin;
   kmernode* node;
-  
   for (int j =0; j < readLine/4; j++){
     start = partial_r.tellg();
     start = start++;
@@ -156,7 +156,8 @@ void reader::FastaReader(int seq_num)
   unsigned long long max_ptr = contig.size() - kmer_size;  
   for(unsigned long long i = 0; i <= max_ptr ; i++){
     sub = contig.substr(i, kmer_size); 
-    hash_table[hash_function::djb2_hash(sub, kmer_size,5381)%(HASH_SIZE)] = 1;
+    if(sub[0] != 'N'){
+    	hash_table[hash_function::djb2_hash(sub, kmer_size,5381)%(HASH_SIZE)] = 1;}
   }
   partial_r.close();
 }
