@@ -145,8 +145,10 @@ void reader::FastaReader(int seq_num)
   string contig;
   string line;
   string sub;
+  string garbage;
   partial_r.seekg(thread_start);
 
+  getline(partial_r,garbage);
   while(true){
     partial_r>>line; 
     if( partial_r.eof() || line.front() == '>')
