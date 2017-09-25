@@ -64,3 +64,18 @@ void hash_function:: bloom_filter_hash(int kmer_size,vector<int> primes, kmernod
      before = temp;  
   }
 }
+
+unsigned int hash_function::SDBMHash(string str)
+{
+	unsigned int hash = 0;
+	unsigned int i = 0;
+	unsigned int len = str.length();
+
+	for (i = 0; i < len; i++)
+	{
+		hash = (str[i]) + (hash << 6) + (hash << 16) - hash;
+	}
+
+	return hash;
+}
+

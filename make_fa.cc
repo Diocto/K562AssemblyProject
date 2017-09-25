@@ -32,10 +32,7 @@ int main(int argc, char* argv[])
   set<int> contig_p_set (contig_p_vec.begin(),contig_p_vec.end());
   set<int>::iterator pos;
 //////////////////////////extract pointer/////////////
- /* 
-  for(pos = contig_p_set.begin(); pos!=contig_p_set.end();pos++){
-    cout<<*pos<<endl;
-  }*/
+
 //////////////////////////making fasta/////////////
   pos = contig_p_set.begin();
   int num = 0,pt,size; 

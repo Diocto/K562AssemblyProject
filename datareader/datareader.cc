@@ -14,6 +14,7 @@ pthread_mutex_t mtA = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mtQ = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mtL = PTHREAD_MUTEX_INITIALIZER;
 std::bitset<HASH_SIZE> hash_table;
+std::bitset<HASH_SIZE> s_hash_table;
 
 void print_hash(){
   cout<<hash_table.count()<<"\n";
@@ -159,7 +160,8 @@ void reader::FastaReader(int seq_num)
   for(unsigned long long i = 0; i <= max_ptr ; i++){
     sub = contig.substr(i, kmer_size); 
     if(sub[0] != 'N'){
-    	hash_table[hash_function::djb2_hash(sub, kmer_size,5381)%(HASH_SIZE)] = 1;}
+    	hash_table[hash_function::djb2_hash(sub, kmer_size,5381)%(HASH_SIZE)] = 1;
+}
   }
   partial_r.close();
 }
