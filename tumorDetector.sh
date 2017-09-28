@@ -13,6 +13,9 @@ mkdir abyss_origin
 mkdir abyss_input
 mkdir output
 
+rm abyss_input/input* abyss_input/coverage*
+rm abyss_origin/origin* abyss_origin/coverage*
+
 echo ../$fastqPath1 ../$fastqPath2
 
 ./assemble $reference $fastq1 $fastq2 $kmer
