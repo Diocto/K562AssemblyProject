@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
    
     read_garbage(2,is); 
   }
-  Total_cnt = Dup_cnt + Ins_cnt + Inv_cnt + Dup_cnt;
+  Total_cnt = Dup_cnt + Ins_cnt + Inv_cnt + Del_cnt;
   cout<<"#Total = "<<Total_cnt<<endl;
   cout<<"#Duplication % = "<<Dup_cnt/Total_cnt*100<<"("<<Dup_cnt<<")"<<endl;
   cout<<"#Inversion % = "<<Inv_cnt/Total_cnt*100<<"("<<Inv_cnt<<")"<<endl;
@@ -120,5 +120,9 @@ void print_error(string Error, string ref_chr_num[], string input_chr_num[], uns
   ss<<"#Input Contig = "<<input_chr_num[0]<<endl;
   ss<<"#1's Position : Start = "<<ref_chr_start[0]<<", End = "<<ref_chr_end[0]<<", Size = "<<contig[0].size()<<endl;
   ss<<"#2's Position : Start = "<<ref_chr_start[1]<<", End = "<<ref_chr_end[1]<<", Size = "<<contig[1].size()<<endl;
+  if( !Error.compare("Insertion") || !Error.compare("Deletion") ){
+    ss<<"#Gap of refrence = "<<ref_gap<<endl;
+    ss<<"#Gap of input = "<<input_gap<<endl;
+  }
   ss<< "1. " <<contig[0]<<endl<<"2. "<<contig[1]<<endl<<endl;
 }

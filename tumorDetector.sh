@@ -7,23 +7,26 @@ reference=$1
 fastq1=$2
 fastq2=$3
 kmer=$4
-fastqPath=$2' '$3
-
+fastqPath1=$2
+fastqPath2=$3
 mkdir abyss_origin
 mkdir abyss_input
+mkdir output
 
-#./assemble $reference $fastq1 $fastq2 $kmer
+echo ../$fastqPath1 ../$fastqPath2
 
-#cd abyss_origin
+./assemble $reference $fastq1 $fastq2 $kmer
 
-#abyss-pe k=$kmer name=origin in="../$fastqPath" 
+cd abyss_origin
 
-#cd ..
-#cd abyss_input
+abyss-pe k=$kmer name=origin in="../$fastqPath1 ../$fastqPath2" 
 
-#abyss-pe k=$kmer name=input in='../output/nodabread_1.fastq ../output/nodabread_2.fastq'
+cd ..
+cd abyss_input
 
-#cd ..
+abyss-pe k=$kmer name=input in='../output/nodabread_1.fastq ../output/nodabread_2.fastq'
+
+cd ..
 
 ./lastz_32 abyss_origin/origin-8.fa[multiple] abyss_input/input-8.fa \
       --notransition --step=20 --nogapped \
