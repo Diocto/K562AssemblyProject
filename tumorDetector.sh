@@ -9,14 +9,11 @@ fastq2=$3
 kmer=$4
 fastqPath1=$2
 fastqPath2=$3
-mkdir abyss_origin
-mkdir abyss_input
-mkdir output
-
-rm abyss_input/input* abyss_input/coverage*
-rm abyss_origin/origin* abyss_origin/coverage*
-
-echo ../$fastqPath1 ../$fastqPath2
+mkdir abyss_origin >& log
+mkdir abyss_input >& log
+mkdir output >& log
+#rm abyss_input/input* abyss_input/coverage* >& log
+#rm abyss_origin/origin* abyss_origin/coverage* >& log
 
 ./assemble $reference $fastq1 $fastq2 $kmer
 

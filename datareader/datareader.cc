@@ -63,23 +63,38 @@ void reader::find_start_fastq(int number)
   unsigned long long file_size;
   unsigned long long section_size;
   unsigned long long position;
-  NUMTHREAD = 0;
+  int flag = 1;
+  NUMTHREAD = 1;
   string t;
   ifstream is(fq[number].c_str(),ifstream::in );
   int lineCount = 0;
   while(getline(is, t))
    ++lineCount;
   is.clear();
-   for (int i=1000; i < lineCount ; i++){
+  readLine = lineCount;
+  int start_val =500;
+  int end_val = 1800;
+  while(flag){
+   for (int i=start_val; i < end_val ; i++){
     if(lineCount % i == 0 && (lineCount/i)%4 == 0 ) {
        NUMTHREAD = i;
        readLine = lineCount/NUMTHREAD;
+       flag = 0;
        break;
+    }}
+  if (flag == 1 && lineCount >= 1800){
+     start_val = end_val;
+     end_val *= 2;  }
+   else if( flag == 1 && lineCount < 1800){
+     end_val = start_val;
+    start_val /= 2;}
     }
-  }
   is.seekg(0,ios::beg);
-  cout << "number of lines : " << lineCount << endl;
-  cout << " read Line : " << readLine << endl;
+  /*
+  cout << "Fastq file Reading Process now start..." << endl;
+  cout << "Fastq file Lines : " << lineCount << endl;
+  cout << "Line per Thread : " << readLine << endl;
+  */
   startq.push_back((unsigned long long)0);
   while(!is.eof()){
   for (int  i = 0; i<readLine; i++){
@@ -108,6 +123,7 @@ void reader::FastqReader(int seq_num,int number)
   string garbage;
   unsigned long long start = 0;
   int distin;
+  int linesize = 0;
   kmernode* node;
   for (int j =0; j < readLine/4; j++){
     start = partial_r.tellg();
@@ -115,8 +131,10 @@ void reader::FastqReader(int seq_num,int number)
     getline(partial_r,garbage);
     getline(partial_r,genome_seq);
     distin = 0;
-     for(int i = 0; i < 101 - kmer_size + 1; i++){
-       if (genome_seq.size() != 0){
+    linesize = genome_seq.size();
+    if(linesize != 0){
+     for(int i = 0; i < linesize - kmer_size + 1; i++){
+      
          genome_substr = genome_seq.substr(i,kmer_size);
          if ( hash_table[hash_function::djb2_hash(genome_substr, kmer_size,5381)%(HASH_SIZE)] == 0 ){
            if(distin == 0){
@@ -139,8 +157,6 @@ void reader::FastaReader(int seq_num)
   stringstream ss;
   ss<<"output/"<<seq_num<<".txt";
   pthread_mutex_unlock(&mtA);
-  
-  cout <<seq_num<<" thread start !!\n";
   ifstream partial_r(ref.c_str(),ifstream::in);
   unsigned long long thread_start = starta[seq_num];
   string contig;
